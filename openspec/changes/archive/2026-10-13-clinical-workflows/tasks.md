@@ -18,8 +18,9 @@
 
 - [x] 3.1 Run clinical/repeat/audit/direct/HTMX/revocation tests.
 - [x] 3.2 Run migration/Django/format/type/whitespace checks.
-- [ ] 3.3 Strictly validate, archive/sync verified capability and commit.
+- [x] 3.3 Strictly validate, archive/sync verified capability and commit.
 
 Evidence: clinical, identity/audit, operations, invariant, error-privacy,
 review-regression and UI suites. Full PostgreSQL acceptance: 73 passed on
 2026-10-13, including independent concurrent instruction revisions.
+Implementation commit: ad1c6a5. CLI archive/sync performed on 2026-10-13.

@@ -37,9 +37,11 @@ OpenSpec 1.14.1 exist. Review findings were reproduced and fixed with regression
 tests for cancellation races, exception privacy, scoped cancellation, change
 resolution, actionable queue, unavailable IDs and current-state replay feedback.
 
-Core archive/commit/handoff lifecycle remains pending below. The four integrated
-domain increments will share one implementation commit to keep cross-wired
-settings/routes functional, followed by verified spec archive/evidence commits.
+All five changes were CLI-archived and synced to canonical specifications;
+strict validation passed for all five specs (54 scenarios). The four integrated
+domain increments share implementation commit `ad1c6a5` to keep cross-wired
+settings/routes functional, following foundation commit `381d534`. Archive
+bookkeeping flags were completed only after the actual archive operations.
 Real-provider/live-data/deployment gates and the later WhatsApp pilot remain
 outside local acceptance. Python 3.13/Django 5.2 compatibility was verified.
 
@@ -106,7 +108,7 @@ append-only audit metadata, and MFA-protected doctor entry.
 - [x] Run targeted identity/authentication tests and confirm intended failure.
 - [x] Implement the models and narrow services, integrate maintained MFA,
   generate migrations, then run targeted tests and migration/check commands.
-- [ ] Validate/verify/archive the identity change and commit.
+- [x] Validate/verify/archive the identity change and commit.
 
 ## Increment 3: Structured intake and safe appointment calendar
 
@@ -136,7 +138,7 @@ calendar and PostgreSQL overlap constraint.
   calendar locking and database constraints, then rerun on PostgreSQL.
 - [x] Verify availability edits do not move/cancel booked appointments;
   verify cancellation is actor-authorized, POST-only and audited.
-- [ ] Validate/verify/archive the change and commit.
+- [x] Validate/verify/archive the change and commit.
 
 ## Increment 4: Private clinical history and explicit medicine decisions
 
@@ -165,7 +167,7 @@ approve/decline/consultation-required decisions with actor and time.
   Do not claim database-administrator tamper-proofing.
 - [x] Run tests and confirm failure; implement services/views/revisions,
   generate migrations, rerun and check current-grant revocation behavior.
-- [ ] Validate/verify/archive the change and commit.
+- [x] Validate/verify/archive the change and commit.
 
 ## Increment 5: Manual operations and integrated minimal UI
 
@@ -200,7 +202,7 @@ honest operational/live-data gates.
   privacy/dispensing/retention reviews, hosting selection, encrypted daily
   backups and restoration/session/access reconciliation. Do not invent
   legal policy text, public clinic details, cost figures or restore evidence.
-- [ ] Validate/verify/archive the change and commit.
+- [x] Validate/verify/archive the change and commit.
 
 ## Final integrated acceptance
 
@@ -208,11 +210,11 @@ honest operational/live-data gates.
   permission/CSRF/UI tests. Report exact commands and counts.
 - [x] Run Django checks and migration-drift checks, Black/isort checks and
   the chosen compatible type checker. Fix failures caused by this work.
-- [ ] Run the installed CLI's supported strict all-spec/change validation.
+- [x] Run the installed CLI's supported strict all-spec/change validation.
   Confirm every archived capability has implementation/test evidence, while
   WhatsApp remains pending and no live-provider delivery is claimed.
-- [ ] Run `git diff --check`, inspect the final staged change, and commit
+- [x] Run `git diff --check`, inspect the final staged change, and commit
   without bypassing hooks or adding AI footers.
-- [ ] Send the coordinator branch/path, commits, exact evidence,
+- [x] Prepare coordinator handoff with branch/path, commits, exact evidence,
   implemented OpenSpec state, remaining production gates, and any genuinely
   blocked core requirement. Do not publish or land the branch.

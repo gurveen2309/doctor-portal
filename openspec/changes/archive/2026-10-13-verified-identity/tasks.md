@@ -19,9 +19,10 @@
 
 - [x] 3.1 Run targeted identity/permission/auth/audit tests on PostgreSQL.
 - [x] 3.2 Run migration/Django/format/type/whitespace checks.
-- [ ] 3.3 Strictly validate, archive/sync verified capability and commit.
+- [x] 3.3 Strictly validate, archive/sync verified capability and commit.
 - [x] 3.4 Document actual provider and recovery production gates.
 
 Evidence: identity, OTP/concurrency, doctor auth/setup, error-privacy,
 invariant and UI suites. Full PostgreSQL acceptance: 73 passed on 2026-10-13.
 Provider delivery remains synthetic; no live-provider or legal readiness claim.
+Implementation commit: ad1c6a5. CLI archive/sync performed on 2026-10-13.

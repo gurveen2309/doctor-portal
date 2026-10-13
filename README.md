@@ -38,6 +38,9 @@ OpenSpec 1.14.1 is initialized with GitHub Copilot support and
 `--no-copilot-cloud`. Every invocation through npm scripts disables telemetry.
 Changes contain proposal, design, tasks and acceptance scenarios. Strict
 validation covers all five core capabilities. Archive only verified work.
+The five implemented changes are archived under `openspec/changes/archive/`;
+their canonical specifications in `openspec/specs/` contain 54 scenarios.
+There are no unfinished active core changes.
 
 Acceptance on 2026-10-13: **73 synthetic tests passed on PostgreSQL 17**,
 including independent-connection calendar/OTP/revision concurrency, permission
@@ -91,7 +94,7 @@ git diff --check
 
 Initialization was performed with
 `npm run spec -- init --tools github-copilot --no-copilot-cloud`.
-Do not reinitialize or overwrite existing artifacts. Inspect work with
+Do not reinitialize or overwrite existing artifacts. Inspect a future active change with
 `npm run spec -- status --change <name>` and
 `npm run spec -- instructions apply --change <name>`.
 `npm run spec:validate` runs the verified `validate --all --strict` flags.

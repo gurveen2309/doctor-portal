@@ -19,9 +19,9 @@
 
 - [x] 3.1 Run full PostgreSQL pytest including concurrency and CSRF.
 - [x] 3.2 Run migrations/Django/format/types/whitespace checks.
-- [ ] 3.3 Strictly validate and archive/sync verified core changes.
+- [x] 3.3 Strictly validate and archive/sync verified core changes.
 - [x] 3.4 Keep WhatsApp pending without live-provider claims.
-- [ ] 3.5 Commit and report exact branch/path/evidence and production gates.
+- [x] 3.5 Commit verified core and prepare exact branch/path/evidence and production-gate handoff.
 
 Evidence: 73 PostgreSQL tests passed on 2026-10-13; strict typing covered
 73 application/migration files. Local public/sign-in pages were inspected at
@@ -29,3 +29,4 @@ Evidence: 73 PostgreSQL tests passed on 2026-10-13; strict typing covered
 unauthenticated doctor route returned 403. Temporary UI server was stopped.
 An actual production check failed as intended with E001/E004/E005 for synthetic
 secret, missing provider and unapproved live-data gates.
+Implementation commit: ad1c6a5. CLI archive/sync performed on 2026-10-13.
