@@ -1,0 +1,18 @@
+{
+  "name": "doctor-portal-specifications",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Repository-local specification tooling for Doctor's Portal",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "spec": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec",
+    "spec:help": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec --help",
+    "spec:version": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec --version",
+    "spec:validate": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec validate --all --strict"
+  },
+  "devDependencies": {
+    "@fission-ai/openspec": "1.14.1"
+  }
+}
