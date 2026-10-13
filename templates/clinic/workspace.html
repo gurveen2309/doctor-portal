@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Doctor workspace</h2>
+<p><a href="{% url 'manage-patients' %}">Patients / access verification</a> | <a href="{% url 'clinic-settings' %}">Clinic / availability</a> | <a href="{% url 'doctor-intake' %}">Phone / in-person intake</a></p>
+<p><a href="?view=queue">Actionable queue</a> | <a href="?view=history">Request history</a></p>
+<h3>{% if queue_view == "history" %}Request history{% else %}Unified queue{% endif %}</h3>
+{% for row in page %}<article><a href="{% url 'doctor-request' row.pk %}">{{ row.patient.name }} - {{ row.get_kind_display }} - {{ row.status }}</a><p>Age: {{ row.created_at|timesince }} | Priority: {{ row.priority }}{% if row.time_sensitive %} | Time-sensitive flag{% endif %}{% if row.change_requested %} | Change requested{% endif %}{% if row.fulfillment.cancellation_pending %} | Physical cancellation review{% endif %}</p></article>{% empty %}<p>No requests.</p>{% endfor %}
+{% if page.has_previous %}<a href="?view={{ queue_view }}&amp;page={{ page.previous_page_number }}">Previous</a>{% endif %} <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span> {% if page.has_next %}<a href="?view={{ queue_view }}&amp;page={{ page.next_page_number }}">Next</a>{% endif %}
+<h3>Confirmed calendar</h3>{% for item in appointments %}<p>{{ item.starts_at }} to {{ item.ends_at }} - {{ item.patient.name }}</p>{% empty %}<p>No confirmed appointments.</p>{% endfor %}
+<h3>Published availability</h3>{% for window in windows %}<p>{{ window.starts_at }} to {{ window.ends_at }}</p>{% empty %}<p>No published availability.</p>{% endfor %}
+{% endblock %}

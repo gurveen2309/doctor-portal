@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ patient.name }} - {{ patient.card_number }}</h2>
+<p><a href="{% url 'new-request' patient.pk %}">Submit a request</a>{% if admin_access %} | <a href="{% url 'patient-payments' patient.pk %}">Manual payment records</a>{% endif %}
+{% if clinical_access %} | <a href="{% url 'clinical-history' patient.pk %}">Private visits and instructions</a>{% endif %}</p>
+{% for row in rows %}<article><a href="{% url 'request-detail' row.id %}">{{ row.kind }} - {{ row.status }}</a><p>{{ row.created_at }}{% if row.time_sensitive %} - Time-sensitive flag{% endif %}</p></article>
+{% empty %}<p>No requests yet.</p>{% endfor %}
+{% endblock %}

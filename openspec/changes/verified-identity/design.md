@@ -26,6 +26,9 @@ database grant, patient verification, reviewed phone classification,
 clinic-local age and restoration access suspension, raising `PermissionDenied`.
 Do not cache grant decisions in the session. Use the same checks for full,
 direct, HTMX and future JSON surfaces.
+At patient object view boundaries, expected access denial becomes the same 404
+as an absent ID. Service permission errors remain explicit; role/MFA checks
+run before lookup on doctor-only routes.
 
 Adult clinical access needs reviewed private phone and verified personal
 adult clinical grant. Guardians need child DOB and verified relationship;
@@ -39,6 +42,10 @@ OTP stores hashes, expiry, bounded attempts and consumption under lock.
 Resend/account/source limits cannot trust arbitrary forwarded headers.
 Only test fixtures inject in-memory delivery. Provider failure is explicit,
 not console output or a fake success. Codes/hashes are not logged.
+Default reporting hides all request values, locals, user representations and
+exception payloads, including unexpected adapter failures. Log severity/status,
+failure type and source locations remain observable. This deliberately trades
+verbose diagnostics for private-by-default error handling.
 
 Use maintained Django MFA components after compatibility verification. Every
 doctor surface and enabled admin must enforce MFA; otherwise disable admin.

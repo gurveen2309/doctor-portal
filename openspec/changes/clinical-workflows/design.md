@@ -12,8 +12,9 @@ inference or auto renewal.
 ## Decisions
 
 `clinical/models.py` defines clarification responses, visits, instruction
-revisions and repeat decisions. All writes require doctor MFA; all clinical
-reads require current clinical grants.
+revisions and repeat decisions. Clinical decisions/instruction writes require
+doctor MFA; patient missing-information replies and clarification cancellation
+require current clinical scope. All clinical reads require current clinical grants.
 
 Clarification outcomes are reply, missing information or consultation required.
 Follow-up stays in the same structured authorized request, not an open chat.
@@ -31,6 +32,8 @@ Administrative selectors use an explicit structured allowlist. Do not supply
 clinical text/reasons to administrative templates or rely on HTML hiding.
 Audit append shares the decision transaction and references IDs, not payloads.
 Logs avoid request bodies and private inputs in URLs/errors.
+Exception reports withhold request values, locals and exception payloads
+globally rather than relying on individual form annotations.
 
 ## Risks / Trade-offs
 

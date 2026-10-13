@@ -1,7 +1,7 @@
 # Doctor's Portal architecture
 
-Status: approved requirements translated into implementation boundaries.
-Foundation runtime and OpenSpec initialization verified; remaining core pending.
+Status: portal-first core implemented and locally verified on PostgreSQL.
+Real-provider, live-data and deployment gates remain open.
 
 The requirements baseline is [approved-requirements.md](approved-requirements.md).
 Implementation must not substitute technical convenience for its clinical
@@ -52,6 +52,9 @@ current phone classification, patient age in clinic time, and the requested
 administrative or clinical scope. Both raise Django `PermissionDenied`.
 Selectors must not disclose unauthorized records through existence checks,
 query parameters, related objects, free text, or partial responses.
+Patient object views use `require_visible_access` to map only expected access
+denial to the same 404 response as an absent record; services retain explicit
+`PermissionDenied`. Doctor-only role/MFA failures remain 403 before object lookup.
 
 Administrative views project a fixed allowlist of structured fields. They
 never serialize an entire model. Treat notes, titles supplied by users,
@@ -83,6 +86,9 @@ service-owned and tested; no timer approves anything.
 explicit acceptance state. `Appointment` represents a confirmed occupancy,
 not an alternative hold. Reschedule proposals reference the existing booking
 without removing its occupancy.
+Each requested change increments a version captured by the proposal. Successful
+acceptance resolves only that version; failed acceptance or a newer change
+preserves the unresolved signal.
 
 `Visit` contains an optional explicit follow-up date. `InstructionRevision`
 is immutable and sequential per visit; medicine, precautions and diet text are
@@ -115,6 +121,9 @@ reschedule, cancel the original and create the replacement in the same
 transaction after all checks pass. Any rejection or constraint error rolls
 back the entire transaction, preserving the original confirmed appointment.
 Availability edits report booked conflicts rather than silently changing them.
+Request cancellation also takes the calendar lock before checking occupancy:
+current confirmations and pending alternatives are cancelled/superseded in the
+same transaction. The view never selects a cancellation path from stale state.
 
 Doctor-entered phone/in-person bookings invoke the same service. Tests use
 separate PostgreSQL connections and simultaneous contenders; SQLite is not
@@ -133,6 +142,12 @@ production configuration raises an explicit configuration error; no console
 backend and no secret logging. Tests inject a memory-only delivery fake.
 Throttle by normalized account and defensible client-source limits; do not
 trust arbitrary forwarded headers.
+`config/reporting.py` deliberately withholds error POST/query/cookie/header
+values, traceback locals, exception payloads and user representations. Django
+logs retain severity/status, exception type and source locations rather than
+message/body values. This reduces diagnostics to protect all free text, including
+unknown adapter failures; third-party adapters must separately prohibit secret
+logging. The policy applies in development too, with synthetic fixtures only.
 
 `config/checks.py` owns explicit production-gate checks. Production requires
 PostgreSQL, HTTPS/session/CSRF cookie settings, non-default
@@ -152,6 +167,10 @@ availability, patient verification/grants, phone intake, visit revisions and
 repeat decisions, manual fulfillment and payment records. Every state-changing
 route is POST with CSRF; HTMX is progressive enhancement of the same rules.
 Display explicit errors without leaking secrets or private record contents.
+The actionable queue includes unresolved changes and physical cancellation
+reviews while terminal requests remain in a separate paginated history.
+Idempotent resubmission reports current state rather than falsely announcing
+that an already decided/cancelled request is awaiting review again.
 
 ## Deferred capabilities and restoration
 

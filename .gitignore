@@ -14,3 +14,4 @@ node_modules/
 .worktrees/
 .DS_Store
 staticfiles/
+static/vendor/

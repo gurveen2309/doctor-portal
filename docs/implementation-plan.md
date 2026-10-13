@@ -29,48 +29,51 @@ the file boundaries and transaction/permission interfaces are in
 
 ## Execution status
 
-Foundation runtime implemented and verified with eight pytest tests, Django
-checks, mypy and formatters. Local OpenSpec 1.14.1 initialized using supported
-flags; five initial changes passed strict validation. Actual dependency
-lockfiles exist. PostgreSQL 17 is responsive for subsequent transaction tests.
-Later core changes remain pending until their own implementation evidence.
+All five core increments are implemented locally. Foundation preceded identity,
+calendar, clinical and manual/UI test-first increments. Full PostgreSQL 17
+acceptance passed 73 synthetic tests on 2026-10-13; strict typing covered 73
+application/migration files. Actual dependency lockfiles and locally initialized
+OpenSpec 1.14.1 exist. Review findings were reproduced and fixed with regression
+tests for cancellation races, exception privacy, scoped cancellation, change
+resolution, actionable queue, unavailable IDs and current-state replay feedback.
 
-The steps below are execution requirements, not completed evidence.
-OpenSpec `1.14.1` and its Node floor were verified from public registry metadata
-by the coordinator. Confirm Python dependency compatibility when normal
-execution is approved; write manifests before installing.
+Core archive/commit/handoff lifecycle remains pending below. The four integrated
+domain increments will share one implementation commit to keep cross-wired
+settings/routes functional, followed by verified spec archive/evidence commits.
+Real-provider/live-data/deployment gates and the later WhatsApp pilot remain
+outside local acceptance. Python 3.13/Django 5.2 compatibility was verified.
 
 ## Increment 1: Foundation and specification workflow
 
 **Files:** `pyproject.toml`, `poetry.lock`, `package.json`, `package-lock.json`,
-`manage.py`, `config/{settings,urls,wsgi}.py`, `.env.example`, `Makefile`,
+`manage.py`, `config/{settings,urls,wsgi}.py`, `.env.example`,
 `tests/test_foundation.py`, `openspec/config.yaml`,
 `openspec/changes/portal-foundation/{proposal,design,tasks}.md`,
-`openspec/changes/portal-foundation/specs/runtime/spec.md`, `README.md`.
+`openspec/changes/portal-foundation/specs/portal-runtime/spec.md`, `README.md`.
 
 **Produces:** A reproducible PostgreSQL-only Django runtime, explicit
 development/production settings, test runner, and initialized local OpenSpec
 workflow. No patient functionality is implied by foundation completion.
 
-- [ ] Inspect available Python, Poetry, Node and PostgreSQL executables using
+- [x] Inspect available Python, Poetry, Node and PostgreSQL executables using
   shell access granted for this worktree; check Node meets OpenSpec's published
   floor and Python supports the chosen Django LTS.
-- [ ] Select and pin the published OpenSpec version in `package.json`; install
+- [x] Select and pin the published OpenSpec version in `package.json`; install
   to the repository with a lockfile. Run its version/help with
   `OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1`.
-- [ ] Use the installed CLI to initialize GitHub Copilot support with the
+- [x] Use the installed CLI to initialize GitHub Copilot support with the
   default spec-driven schema; disable unrelated cloud files if the installed
   CLI supports that flag. Add domain/scenario constraints to `config.yaml`.
-- [ ] Create foundation artifacts using the actual CLI instructions. Specify
+- [x] Create foundation artifacts using the actual CLI instructions. Specify
   PostgreSQL-only runtime, timezone, production fail-closed checks, and the
   synthetic-test fixture contract.
-- [ ] Add tests that assert `TIME_ZONE == "Asia/Kolkata"`, `USE_TZ is True`,
+- [x] Add tests that assert `TIME_ZONE == "Asia/Kolkata"`, `USE_TZ is True`,
   PostgreSQL backend, no console OTP backend, and explicit missing-production
   configuration errors. Run `poetry run pytest tests/test_foundation.py -q`
   and observe failure before runtime implementation.
-- [ ] Implement settings/routing/dependencies, then run the same tests,
+- [x] Implement settings/routing/dependencies, then run the same tests,
   `poetry run python manage.py check`, and strict CLI validation.
-- [ ] Document exact successful local bootstrap commands, archive only the
+- [x] Document exact successful local bootstrap commands, archive only the
   verified foundation change using the CLI, and commit the increment.
 
 ## Increment 2: Identity, verified access, and doctor authentication
@@ -78,7 +81,8 @@ workflow. No patient functionality is implied by foundation completion.
 **Files:** `accounts/{models,services,views,forms,urls}.py`,
 `patients/{models,permissions,services}.py`, `audit/{models,services}.py`,
 corresponding migrations, `templates/accounts/`, `tests/conftest.py`,
-`tests/test_identity.py`, `tests/test_permissions.py`, `tests/test_doctor_auth.py`,
+`tests/test_identity.py`, `tests/test_otp.py`, `tests/test_otp_concurrency.py`,
+`tests/test_doctor_auth.py`, `tests/test_doctor_setup.py`,
 `openspec/changes/verified-identity/` artifacts and scenarios.
 
 **Consumes:** Foundation database, Django sessions/CSRF and settings.
@@ -88,19 +92,19 @@ corresponding migrations, `templates/accounts/`, `tests/conftest.py`,
 patient/grant services, hashed OTP challenges and injected test delivery,
 append-only audit metadata, and MFA-protected doctor entry.
 
-- [ ] Write the identity proposal, design, tasks and scenarios for unverified
+- [x] Write the identity proposal, design, tasks and scenarios for unverified
   registration, existing card migration, administrative delegation, shared
   phone classification, guardian access and the 18th birthday boundary.
-- [ ] Add a synthetic matrix covering no grant, unverified grant, admin-only,
+- [x] Add a synthetic matrix covering no grant, unverified grant, admin-only,
   private adult clinical grant, shared-phone adult, verified guardian before
   and on the birthday, and revoked grants. Assert card-number-only access
   fails and a session cannot upgrade classification.
-- [ ] Add OTP expiry, attempt exhaustion, consumption/replay and resend tests;
+- [x] Add OTP expiry, attempt exhaustion, consumption/replay and resend tests;
   provider configuration must fail closed. Assert plain OTPs never enter logs.
   Add doctor password-only denial, verified MFA acceptance, recovery audit,
   and direct-route tests including any administrative interface.
-- [ ] Run the three targeted pytest files and confirm failure.
-- [ ] Implement the models and narrow services, integrate maintained MFA,
+- [x] Run targeted identity/authentication tests and confirm intended failure.
+- [x] Implement the models and narrow services, integrate maintained MFA,
   generate migrations, then run targeted tests and migration/check commands.
 - [ ] Validate/verify/archive the identity change and commit.
 
@@ -109,8 +113,7 @@ append-only audit metadata, and MFA-protected doctor entry.
 **Files:** `clinic/{models,services,views}.py`,
 `intake/{models,services,views,forms}.py`,
 `appointments/{models,services}.py`, corresponding migrations,
-`tests/test_intake.py`, `tests/test_appointments.py`,
-`tests/test_appointment_concurrency.py`,
+`tests/test_calendar.py`, `tests/test_invariants.py`, `tests/test_review_regressions.py`,
 `openspec/changes/request-calendar/` artifacts and scenarios.
 
 **Consumes:** Current grant checks, MFA checks and audit metadata.
@@ -119,19 +122,19 @@ append-only audit metadata, and MFA-protected doctor entry.
 request/propose/confirm/accept/change/cancel services sharing one locked
 calendar and PostgreSQL overlap constraint.
 
-- [ ] Specify immediate received feedback, patient time-sensitive reason and
+- [x] Specify immediate received feedback, patient time-sensitive reason and
   doctor priority, no response deadline/autoapproval, requested-time direct
   confirmation, unreserved alternatives and explicit acceptance.
-- [ ] Add tests for duplicate submission, out-of-availability requests at
+- [x] Add tests for duplicate submission, out-of-availability requests at
   confirmation, touching versus overlapping intervals, closures, phone and
   in-person channels, competing acceptance, proposal replay, and failed
   reschedule preserving the original booking.
-- [ ] Add transactional PostgreSQL tests with separate connections and
+- [x] Add transactional PostgreSQL tests with separate connections and
   synchronized competing workers. Assert exactly one contender commits for
   an overlapping slot, including mixed doctor-entered/patient-accepted paths.
-- [ ] Run the targeted tests and observe failure; implement service checks,
+- [x] Run the targeted tests and observe failure; implement service checks,
   calendar locking and database constraints, then rerun on PostgreSQL.
-- [ ] Verify availability edits do not move/cancel booked appointments;
+- [x] Verify availability edits do not move/cancel booked appointments;
   verify cancellation is actor-authorized, POST-only and audited.
 - [ ] Validate/verify/archive the change and commit.
 
@@ -139,8 +142,8 @@ calendar and PostgreSQL overlap constraint.
 
 **Files:** `clinical/{models,services,views,forms}.py`,
 corresponding migrations, `templates/clinical/`,
-`tests/test_clinical.py`, `tests/test_repeat_decisions.py`,
-`tests/test_audit_privacy.py`,
+`tests/test_clinical.py`, `tests/test_identity.py`, `tests/test_invariants.py`,
+`tests/test_error_privacy.py`,
 `openspec/changes/clinical-workflows/` artifacts and scenarios.
 
 **Consumes:** Typed intake, patient clinical grants, verified doctor actions,
@@ -150,17 +153,17 @@ and append-only audit metadata.
 revisions, explicit optional visit follow-up dates, doctor-only repeat
 approve/decline/consultation-required decisions with actor and time.
 
-- [ ] Specify separate structured clarification decisions and private text;
+- [x] Specify separate structured clarification decisions and private text;
   clinical grants apply to every detail and partial response. Medicine is
   never approved by elapsed time or shipment activity.
-- [ ] Add tests for doctor reply/missing information/consultation-required,
+- [x] Add tests for doctor reply/missing information/consultation-required,
   revision sequencing and prior text retention, explicit absent/present
   follow-up date, repeat decision actors, no timeout approval, and admin-only
   summary omission of every private free-text field.
-- [ ] Add audit tests that reject update/delete through supported application
+- [x] Add audit tests that reject update/delete through supported application
   paths and ensure metadata contains no medicine/instruction/reason text.
   Do not claim database-administrator tamper-proofing.
-- [ ] Run tests and confirm failure; implement services/views/revisions,
+- [x] Run tests and confirm failure; implement services/views/revisions,
   generate migrations, rerun and check current-grant revocation behavior.
 - [ ] Validate/verify/archive the change and commit.
 
@@ -169,7 +172,8 @@ approve/decline/consultation-required decisions with actor and time.
 **Files:** `operations/{models,services,views,forms}.py`,
 corresponding migrations, `templates/{base,clinic,doctor,patients,intake}/`,
 `static/portal.css`, application URLs, `tests/test_operations.py`,
-`tests/test_ui.py`, `tests/test_csrf.py`, `docs/production-gates.md`,
+`tests/test_ui.py`, `tests/test_progressive_ui.py`, `tests/test_review_regressions.py`,
+`tests/test_error_privacy.py`, `docs/production-gates.md`,
 `openspec/changes/manual-operations-ui/` artifacts and scenarios, `README.md`.
 
 **Consumes:** Explicit repeat approvals, authorization and doctor MFA,
@@ -179,20 +183,20 @@ confirmed appointments, private clinical services and audit.
 mobile-friendly public/patient/doctor flows, visible error states, and
 honest operational/live-data gates.
 
-- [ ] Specify pickup/delivery, minimal necessary address, HTTPS tracking,
+- [x] Specify pickup/delivery, minimal necessary address, HTTPS tracking,
   preparation/dispatch approval prerequisites, cancellation review after
   physical work starts, and manual INR charge/receipt corrections.
-- [ ] Add tests denying preparation and dispatch without approval, rejecting
+- [x] Add tests denying preparation and dispatch without approval, rejecting
   unsafe tracking URLs, preserving reviewed cancellation semantics,
   distinguishing charges from externally received cash/UPI, and auditing
   corrections without automatic refunds.
-- [ ] Add Django-client UI tests for public clinic information, OTP flow with
+- [x] Add Django-client UI tests for public clinic information, OTP flow with
   injected fake, verified patient selection, received status, proposal
   acceptance, clinical scope omission and doctor queue/calendar/actions.
   Include forged IDs, revoked grants, HTMX requests, and CSRF-enforced POSTs.
-- [ ] Run targeted tests and observe failure; implement minimal templates,
+- [x] Run targeted tests and observe failure; implement minimal templates,
   forms, authorized selectors and manual services, then rerun.
-- [ ] Record production gates: actual provider onboarding, MFA/recovery,
+- [x] Record production gates: actual provider onboarding, MFA/recovery,
   privacy/dispensing/retention reviews, hosting selection, encrypted daily
   backups and restoration/session/access reconciliation. Do not invent
   legal policy text, public clinic details, cost figures or restore evidence.
@@ -200,9 +204,9 @@ honest operational/live-data gates.
 
 ## Final integrated acceptance
 
-- [ ] Run all pytest tests on PostgreSQL, including concurrency and
+- [x] Run all pytest tests on PostgreSQL, including concurrency and
   permission/CSRF/UI tests. Report exact commands and counts.
-- [ ] Run Django checks and migration-drift checks, Black/isort checks and
+- [x] Run Django checks and migration-drift checks, Black/isort checks and
   the chosen compatible type checker. Fix failures caused by this work.
 - [ ] Run the installed CLI's supported strict all-spec/change validation.
   Confirm every archived capability has implementation/test evidence, while

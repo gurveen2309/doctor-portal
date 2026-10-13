@@ -1,3 +1,7 @@
+## Purpose
+Coordinate structured intake and all booking channels through a shared,
+approval-based PostgreSQL calendar without losing original reservations.
+
 ## ADDED Requirements
 
 ### Requirement: Clinic information is configured and factual
@@ -34,6 +38,11 @@ under the same key MUST raise a conflict.
 - **WHEN** identical payload/key is repeated
 - **THEN** the original returns without another queue item
 
+#### Scenario: Terminal request is replayed
+- **GIVEN** the original request has already been decided or cancelled
+- **WHEN** identical payload/key is repeated
+- **THEN** its current state is shown without falsely returning it to awaiting review
+
 ### Requirement: Final confirmation is atomic
 Appointments MUST be approved. Exact requested time MAY be doctor-confirmed;
 alternatives MUST be unreserved and explicitly accepted. Final confirmation
@@ -68,6 +77,21 @@ Failure MUST preserve original time/status.
 - **GIVEN** a reschedule proposal awaits acceptance
 - **WHEN** the calendar is viewed
 - **THEN** the original still occupies its confirmed interval
+
+#### Scenario: Accepted replacement resolves a pending change
+- **GIVEN** a proposal corresponds to a pending change request
+- **WHEN** its replacement is accepted successfully
+- **THEN** that change is resolved atomically
+- **AND** a newer change request is not cleared by older proposal acceptance
+
+### Requirement: Appointment cancellation is calendar-atomic
+Cancellation MUST lock the shared calendar and recheck current bookings.
+It MUST cancel active occupancy and supersede pending alternatives together.
+
+#### Scenario: Confirmation races cancellation
+- **GIVEN** a received request is being confirmed while cancellation is submitted
+- **WHEN** both transactions finish
+- **THEN** the cancelled request has no confirmed booking or live proposal
 
 ### Requirement: All channels and availability changes are consistent
 Portal/phone/in-person MUST use the same rules. Availability edits MUST NOT

@@ -18,5 +18,5 @@
 ## 3. Verified lifecycle
 
 - [x] 3.1 Run format/type and whitespace checks.
-- [ ] 3.2 Run supported strict validation and archive/sync verified foundation only.
-- [ ] 3.3 Commit without bypassing hooks.
+- [x] 3.2 Run supported strict validation and archive/sync verified foundation only.
+- [x] 3.3 Commit without bypassing hooks (381d534).

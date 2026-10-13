@@ -1,3 +1,7 @@
+## Purpose
+Authenticate separate accounts and authorize doctor-verified patient scopes
+with current revocation, adult/guardian boundaries and private audit.
+
 ## ADDED Requirements
 
 ### Requirement: Accounts and patients remain distinct
@@ -29,6 +33,12 @@ direct URLs, HTMX and JSON. Revocation MUST apply immediately.
 - **GIVEN** an administrative-only grant
 - **WHEN** a clinical detail or partial response is requested
 - **THEN** clinical/free-text information is not disclosed
+
+#### Scenario: Unavailable identifier is enumerated
+- **GIVEN** an account lacks access to a patient record
+- **WHEN** it requests an existing unavailable or nonexistent identifier
+- **THEN** both use the same not-found response
+- **AND** direct and HTMX mutations disclose no object existence
 
 ### Requirement: Adult clinical scope needs reviewed private control
 Shared-phone adult accounts MUST have no clinical access. Adult clinical scope
@@ -75,6 +85,12 @@ Codes MUST NOT be logged. Missing real production delivery MUST fail closed.
 - **WHEN** OTP delivery is requested
 - **THEN** failure is explicit without printing/logging secrets
 - **AND** no fake delivery or auth bypass activates
+
+#### Scenario: Authentication exception is reported
+- **GIVEN** a sign-in or provider operation raises unexpectedly
+- **WHEN** Django reports or logs the failure
+- **THEN** failure type and source location remain observable
+- **AND** submitted/generated codes, phone, local values and exception payloads are withheld
 
 ### Requirement: Doctor access requires verified MFA
 Every doctor route/settings/verification and enabled admin MUST require MFA.

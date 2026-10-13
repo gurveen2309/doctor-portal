@@ -1,3 +1,7 @@
+## Purpose
+Expose authorized clinic workflows through mobile-friendly forms and manual
+fulfillment/payment records while keeping live-data gates explicit.
+
 ## ADDED Requirements
 
 ### Requirement: Fulfillment requires approval
@@ -69,6 +73,17 @@ guidance, without instant booking, advice or response-deadline implication.
 - **GIVEN** authorized valid form
 - **WHEN** it succeeds
 - **THEN** received state and monitoring limitations are visible
+
+### Requirement: Actionable work stays visible
+The doctor queue MUST exclude terminal history unless an unresolved change or
+physical cancellation review requires attention. History MUST remain accessible
+separately without displacing pending work.
+
+#### Scenario: Historical requests outnumber one page
+- **GIVEN** terminal requests exceed the queue page size
+- **WHEN** the doctor opens the actionable queue
+- **THEN** pending work and unresolved cancellation reviews remain visible
+- **AND** terminal records remain available in request history
 
 ### Requirement: Production and restore gates are separate
 Live data MUST require operational/privacy/practice/dispensing/authentication

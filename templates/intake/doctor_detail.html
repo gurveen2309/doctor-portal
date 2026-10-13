@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ row.patient.name }} - {{ row.get_kind_display }} - {{ row.status }}</h2>
+<p><a href="{% url 'clinical-history' row.patient.pk %}">Visits/instructions</a> | <a href="{% url 'patient-payments' row.patient.pk %}">Manual INR records</a></p>
+<p>Source: {{ row.channel }} | Age: {{ row.created_at|timesince }}</p>
+{% include "intake/priority.html" %}
+<p>{{ row.message|linebreaksbr }}</p>{% if row.time_sensitive %}<p>Time-sensitive reason: {{ row.reason|linebreaksbr }}</p>{% endif %}
+{% if row.preference == "delivery" %}<p>Minimum delivery address: {{ row.delivery_address }}</p>{% endif %}
+{% if row.change_requested %}<p>Patient requested change: {{ row.change_starts_at }} to {{ row.change_ends_at }}. Original booking remains.</p>{% endif %}
+{% if row.kind == "appointment" %}<p>Originally requested: {{ row.starts_at }} to {{ row.ends_at }}</p><form method="post">{% csrf_token %}<input type="hidden" name="action" value="confirm"><button>Confirm exact originally requested time</button></form>{% endif %}
+{% for response in row.responses.all %}<p>{{ response.outcome }} - {{ response.message|linebreaksbr }}</p>{% endfor %}
+{% if fulfillment %}<p>Manual fulfillment: {{ fulfillment.status }} | {{ fulfillment.carrier }} | {{ fulfillment.tracking_number }}</p>
+{% if fulfillment.cancellation_pending %}<p>Physical cancellation needs review; recording cancellation does not undo courier/preparation work or refund money.</p>
+<form method="post">{% csrf_token %}<input type="hidden" name="action" value="cancellation_approve"><button>Record reviewed cancellation</button></form>
+<form method="post">{% csrf_token %}<input type="hidden" name="action" value="cancellation_decline"><button>Decline cancellation</button></form>
+{% endif %}{% endif %}
+{% for action, form in forms.items %}<section><h3>{{ action|title }}</h3><form method="post">{% csrf_token %}<input type="hidden" name="action" value="{{ action }}">{{ form.as_p }}<button>Record doctor decision</button></form></section>{% endfor %}
+{% endblock %}

@@ -17,12 +17,15 @@ No invented real clinic facts or unsupported treatment claims.
 
 `ClinicRequest` separates type/status/channel/time/doctor priority from private
 free text. Time-sensitive needs a private reason; administrative projections
-show flag, not reason. Order queue by doctor priority then age.
+show flag, not reason. Order actionable queue by doctor priority then age;
+terminal history does not displace pending work or unresolved change/review.
 
 `submit_request(actor, patient, kind, ..., idempotency_key)` checks current
 permissions and an actor-scoped unique key. Same normalized payload/key
 returns the original; different payload/key reuse raises an explicit conflict.
 Do not log private payloads.
+Replay feedback reflects the existing current state, not a new awaiting-review
+claim after a request has already been decided or cancelled.
 
 Appointments record exact requested start/end. Direct doctor confirmation
 of that requested interval needs no new acceptance. Alternatives require
@@ -37,6 +40,10 @@ Reschedule proposals reference the active original. Acceptance locks calendar,
 proposal and original in consistent order. Validate before replacing states;
 roll back the entire transaction on failure. Cancelled/superseded originals
 cannot be replaced by stale proposals.
+Change requests increment a version captured by the proposal. Acceptance
+resolves only that version, preserving newer requests. Cancellation rechecks the
+current request/occupancy under the calendar lock and supersedes alternatives
+atomically; it never follows a view-selected stale branch.
 
 Phone and in-person doctor intake invoke the same services with source actor/
 channel. Availability edits expose intersections with bookings, never silently

@@ -1,0 +1,9 @@
+:root { color-scheme: light; font-family: system-ui, sans-serif; color: #193344; background: #f4f7f9; }
+body { max-width: 960px; margin: auto; padding: 1rem; line-height: 1.6; }
+header, section, article, main { background: white; padding: 1rem; border-radius: .5rem; margin: 1rem 0; }
+a { color: #075a80; }
+input:not([type="checkbox"]), select, textarea { display: block; width: 100%; box-sizing: border-box; max-width: 38rem; padding: .65rem; border: 1px solid #637d89; border-radius: .3rem; font: inherit; }
+button { padding: .65rem 1rem; background: #075a80; color: white; border: 0; border-radius: .3rem; font: inherit; cursor: pointer; margin: .25rem 0; }
+.errorlist { color: #9b1c1c; }
+nav { display: flex; flex-wrap: wrap; gap: .65rem; }
+[role="note"] { border-left: .3rem solid #ba7800; padding: .7rem; background: #fff7e6; }

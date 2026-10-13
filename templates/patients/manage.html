@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Patient verification and access</h2>
+<p>OTP and card numbers do not verify a patient's identity. Verify identity, delegation or guardian relationship directly. Private phone classification is reviewed attestation, not proof of exclusivity.</p>
+{% for patient in patients %}<p>{{ patient.name }} - {{ patient.card_number }} | <a href="{% url 'visit-entry' patient.pk %}">Record visit</a> | <a href="{% url 'clinical-history' patient.pk %}">Clinical history</a> | <a href="{% url 'patient-payments' patient.pk %}">Manual INR</a></p>{% endfor %}
+{% for action, form in forms.items %}
+<section><h3>{{ action|title }}</h3><form method="post">{% csrf_token %}<input type="hidden" name="action" value="{{ action }}">{{ form.as_p }}<button>Record verified decision</button></form></section>
+{% endfor %}
+{% endblock %}

@@ -2,6 +2,9 @@ from typing import Any
 
 from django.conf import settings
 from django.core.checks import Error, register
+from django.core.exceptions import ImproperlyConfigured
+
+from accounts.providers import provider_from_path
 
 
 def production_errors(values: dict[str, Any]) -> list[Error]:
@@ -14,7 +17,9 @@ def production_errors(values: dict[str, Any]) -> list[Error]:
         errors.append(Error("Production needs debug disabled and explicit allowed hosts.", id="portal.E002"))
     if not all(values[key] for key in ("SECURE_SSL_REDIRECT", "SESSION_COOKIE_SECURE", "CSRF_COOKIE_SECURE")):
         errors.append(Error("Production requires HTTPS and secure cookies.", id="portal.E003"))
-    if not values["PATIENT_OTP_PROVIDER"]:
+    try:
+        provider_from_path(values["PATIENT_OTP_PROVIDER"])
+    except ImproperlyConfigured:
         errors.append(Error("A real patient OTP provider must be onboarded.", id="portal.E004"))
     if not values["LIVE_DATA_APPROVED"]:
         errors.append(Error("Live-data legal, privacy, practice and restore gates are not approved.", id="portal.E005"))

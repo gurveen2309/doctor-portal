@@ -1,7 +1,9 @@
 # portal-runtime Specification
 
 ## Purpose
-TBD - created by archiving change portal-foundation. Update Purpose after archive.
+Provide a reproducible PostgreSQL-only Django runtime and local specification
+workflow with explicit production configuration failures and honest lifecycle
+evidence.
 
 ## Requirements
 

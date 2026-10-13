@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Clinic profile, published availability and closures</h2>
+<p>Times are Asia/Kolkata. Availability changes never silently move or cancel confirmed appointments.</p>
+{% for action, form in forms.items %}<section><h3>{{ action|title }}</h3><form method="post">{% csrf_token %}<input type="hidden" name="action" value="{{ action }}">{{ form.as_p }}<button>Record change</button></form></section>{% endfor %}
+{% endblock %}

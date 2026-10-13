@@ -1,0 +1,21 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Doctor's Portal{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'portal.css' %}">
+  <script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Doctor's Portal</h1>
+    <nav><a href="/">Clinic</a> | <a href="/portal/">Patient portal</a> | <a href="/doctor/">Doctor</a></nav>
+    {% if user.is_authenticated %}<form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Sign out</button></form>{% endif %}
+  </header>
+  <p role="note"><strong>Not for emergencies.</strong> Requests are not continuously monitored. For an emergency, seek urgent local medical care. Submission does not promise an immediate human response.</p>
+  {% for message in messages %}<p role="status">{{ message }}</p>{% endfor %}
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

@@ -10,9 +10,11 @@
     "spec": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec",
     "spec:help": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec --help",
     "spec:version": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec --version",
-    "spec:validate": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec validate --all --strict"
+    "spec:validate": "OPENSPEC_TELEMETRY=0 DO_NOT_TRACK=1 openspec validate --all --strict",
+    "assets": "mkdir -p static/vendor && cp node_modules/htmx.org/dist/htmx.min.js static/vendor/htmx.min.js && cp node_modules/htmx.org/LICENSE static/vendor/HTMX-LICENSE"
   },
   "devDependencies": {
-    "@fission-ai/openspec": "1.14.1"
+    "@fission-ai/openspec": "1.14.1",
+    "htmx.org": "2.0.11"
   }
 }

@@ -1,3 +1,7 @@
+## Purpose
+Provide private structured clarifications, explicit follow-up and immutable
+doctor-written instructions without automatic medicine renewal or advice.
+
 ## ADDED Requirements
 
 ### Requirement: Clarifications are private structured requests
@@ -16,6 +20,11 @@ Clinical text MUST require clinical scope; no live chat or automated advice.
 - **THEN** the private outcome is recorded in the authorized request
 - **AND** no unrestricted clinical chat channel is opened
 
+#### Scenario: Clinical-only account cancels clarification
+- **GIVEN** a current clinical grant without administrative scope
+- **WHEN** the account cancels its clarification
+- **THEN** the authorized cancellation succeeds without requiring unrelated administrative scope
+
 ### Requirement: Instructions are immutable revisions
 Medicine/precautions/diet MUST be doctor-written and versioned with actor/time.
 Application paths MUST retain unchanged earlier revisions.
@@ -25,6 +34,11 @@ Application paths MUST retain unchanged earlier revisions.
 - **WHEN** doctor records a correction
 - **THEN** a new sequential revision exists and the first is unchanged
 - **AND** audit does not copy clinical text
+
+#### Scenario: Instruction revisions compete
+- **GIVEN** two permitted revisions of the same visit
+- **WHEN** independent PostgreSQL transactions write concurrently
+- **THEN** both clinical texts are retained in distinct sequential revisions
 
 ### Requirement: Follow-up is explicitly per visit
 Follow-up MUST be optional and explicit. The system MUST NOT infer run-out
@@ -59,3 +73,8 @@ from administrative-only summaries, ordinary logs and notification content.
 - **WHEN** administrative status is rendered
 - **THEN** neither string is present in HTML/data
 - **AND** permitted structured status remains visible
+
+#### Scenario: Clinical exception is reported
+- **GIVEN** an unexpected failure while a private form is processed
+- **WHEN** the application reports or logs it
+- **THEN** POST data, local values and exception payloads disclose no private text

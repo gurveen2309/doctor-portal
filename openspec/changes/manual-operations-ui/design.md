@@ -27,6 +27,9 @@ Use forms/templates with selective progressive HTMX. `templates/base.html`
 shows navigation and emergency/unmonitored guidance. Patient selectors check
 current grants and allowlisted fields. Doctor queue/calendar/verification/
 visits/repeats/operations require MFA.
+The default actionable queue excludes terminal history but retains unresolved
+changes and physical cancellation reviews. Paginated request history remains
+separately available.
 
 Every mutation requires POST+CSRF, including HTMX. Cross-record IDs require
 authorization. Errors are explicit and private, not success-shaped fallbacks.

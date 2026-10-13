@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ summary.kind }} - {{ summary.status }}</h2>
+<p>{{ summary.created_at }}{% if summary.time_sensitive %} - Time-sensitive flag{% endif %}</p>
+{% if fulfillment_status %}<p>Manual medicine fulfillment: {{ fulfillment_status }}</p>{% endif %}
+{% if cancellation_pending %}<p>Physical-work cancellation awaiting doctor review.</p>{% endif %}
+{% if private %}
+<section><h3>Private details</h3><p>{{ private.message|linebreaksbr }}</p><p>{{ private.reason|linebreaksbr }}</p>
+{% for response in responses %}<p>{{ response.outcome }} - {{ response.created_at }}</p><p>{{ response.message|linebreaksbr }}</p>{% endfor %}
+{% if private.status == "missing_information" %}<form method="post" action="{% url 'add-information' summary.id %}">{% csrf_token %}{{ information_form.as_p }}<button>Provide requested information</button></form>{% endif %}
+</section>
+{% endif %}
+{% for proposal in proposals %}<section><h3>Alternative time</h3><p>{{ proposal.starts_at }} to {{ proposal.ends_at }} (Asia/Kolkata)</p><p>Not reserved. Acceptance rechecks availability; your original booking stays if acceptance fails.</p><form method="post" action="{% url 'accept-proposal' proposal.pk %}">{% csrf_token %}<button>Accept alternative</button></form></section>{% endfor %}
+{% for appointment in appointments %}<p>Confirmed: {{ appointment.starts_at }} to {{ appointment.ends_at }}</p>{% endfor %}
+{% if summary.kind == "Appointment" %}<section><h3>Request a change</h3><form method="post" action="{% url 'request-change' summary.id %}">{% csrf_token %}{{ change_form.as_p }}<button>Request change (keep current booking)</button></form></section>{% endif %}
+<form method="post" action="{% url 'cancel-request' summary.id %}">{% csrf_token %}<button>Request cancellation</button></form>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Patient portal</h2>
+{% for patient in patients %}<p><a href="{% url 'patient-home' patient.pk %}">{{ patient.name }} - {{ patient.card_number }}</a></p>
+{% empty %}<p>Your account has no active doctor-verified patient access. Contact the clinic to verify a new registration, existing card, administrative delegation or guardian relationship. Phone possession and card numbers are not access proof.</p>{% endfor %}
+{% endblock %}
