@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Private history: {{ patient.name }}</h2>
+{% if user.is_doctor %}<p><a href="{% url 'visit-entry' patient.pk %}">Record visit</a></p>{% endif %}
+{% for visit in visits %}
+<section><h3>Visit {{ visit.created_at }}</h3><p>Follow-up: {{ visit.follow_up_date|default:"Not specified" }}</p>
+{% if user.is_doctor %}<p><a href="{% url 'visit-revision' patient.pk visit.pk %}">New instruction revision</a></p>{% endif %}
+{% for revision in visit.revisions.all %}<article><h4>Revision {{ revision.revision }} - {{ revision.created_at }}</h4><p>Medicine: {{ revision.medicine|linebreaksbr }}</p><p>Precautions: {{ revision.precautions|linebreaksbr }}</p><p>Diet: {{ revision.diet|linebreaksbr }}</p></article>{% endfor %}
+</section>
+{% empty %}<p>No recorded visits. Historical information may remain on paper.</p>{% endfor %}
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ title }}</h2>
+<p>Times are in Asia/Kolkata. Appointment requests need start and end; they are not instant bookings. All written details are private clinical content and are unavailable to administrative-only accounts after submission.</p>
+<form method="post">{% csrf_token %}{{ form.as_p }}<button>Submit for review</button></form>
+{% endblock %}

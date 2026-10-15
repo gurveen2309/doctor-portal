@@ -1,0 +1,3 @@
+<form id="priority-control" method="post" action="{% url 'request-priority' row.pk %}" hx-post="{% url 'request-priority' row.pk %}" hx-target="this" hx-swap="outerHTML">
+{% csrf_token %}<h3>Doctor priority</h3>{{ priority_form.as_p }}<button>Set priority</button>
+</form>

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+{% if profile.name %}
+<h2>{{ profile.name }}</h2><p>{{ profile.doctor_name }}</p><p>{{ profile.address }}</p><p>{{ profile.contact }}</p>
+{% if profile.map_link %}<p><a href="{{ profile.map_link }}" rel="noopener noreferrer">Clinic map</a></p>{% endif %}
+<p>Opening hours: {{ profile.opening_hours }}</p>
+{% else %}<h2>Clinic information</h2><p>Clinic details have not been configured. This is a local implementation, not a public clinic listing.</p>{% endif %}
+<h3>Closures</h3>{% for closure in closures %}<p>{{ closure.starts_at }} to {{ closure.ends_at }} (Asia/Kolkata)</p>{% empty %}<p>No published closures.</p>{% endfor %}
+<h3>In-person consultations</h3><p>Appointments are requested and reviewed by the doctor, not booked instantly. Use <a href="{% url 'patient-login' %}">patient sign-in</a> for authorized requests.</p>
+<h3>About homeopathy</h3><p>Homeopathy is a system of practice that uses preparations commonly described as homeopathic remedies. This portal makes no claims that a remedy treats or cures a condition and does not provide clinical advice. Discuss care with the doctor; do not delay urgent medical care.</p>
+{% endblock %}

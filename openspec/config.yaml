@@ -1,0 +1,49 @@
+schema: spec-driven
+
+context: |
+  OpenSpec 1.14.1 initialized locally with GitHub Copilot tooling.
+  Draft changes are validated, not yet implemented or archived.
+  Doctor's Portal is one Indian clinic operated by one doctor.
+  Baseline: docs/approved-requirements.md. Boundaries: docs/architecture.md.
+  Use Django modular monolith, PostgreSQL, native templates, selective HTMX,
+  Poetry, pytest, typed Python, Black line length 120 and isort Black profile.
+  Use aware datetimes and Asia/Kolkata. Accounts are distinct from patients.
+  Card numbers never authorize access. Doctor-verified scoped grants and MFA
+  protect every applicable read/mutation/direct URL/partial response.
+  Shared-phone adult accounts are administrative only. Adult clinical access
+  requires reviewed private-phone classification and verified personal grant.
+  Verified guardians require child DOB; guardian clinical access stops at 18.
+  All free text is potentially clinical. Audit metadata, not clinical content.
+  Appointments require approval. Alternatives are unreserved and require
+  acceptance. Final confirmation checks availability/overlaps atomically.
+  Failed reschedules preserve the original. All channels share one calendar.
+  Medicine decisions need explicit doctor actor/time. No timeout approval.
+  Fulfillment/payments are manual. No automatic renewal, courier/payment API,
+  diagnostic bot, live chat, full EMR, public REST API or generic rule engine.
+  Patient OTP delivery fails closed if unconfigured; no production fake/console.
+  No real patient data/messages, GitHub publication or deployment.
+  WhatsApp/outbox is a later separately approved pilot, not this core.
+  Only verified implementations may be archived/synced into canonical specs.
+
+rules:
+  proposal:
+    - Identify exact capabilities and prerequisite increments.
+    - Separate core from provider/policy/live-data production gates.
+    - Do not claim initialization or implementation without observed evidence.
+  design:
+    - Identify exact files, interfaces, permissions and transaction boundaries.
+    - Define errors, replay/idempotency, privacy projection and migration impact.
+    - Do not invent legal policies, clinic details or provider cost figures.
+  specs:
+    - Use normative MUST/SHALL requirements and Given/When/Then scenarios.
+    - Cover denial, revocation, direct/partial routes and sensitive-field
+      omission.
+    - Require real PostgreSQL evidence for calendar concurrency, not SQLite.
+    - Include explicit approvals and failed-transition preservation.
+  tasks:
+    - Write tests first, observe intended failure, implement, rerun targeted
+      checks.
+    - Keep tasks unchecked until their results are observed.
+    - Record exact validation evidence before archive/sync or completion.
+githubCopilot:
+  cloudAgent: false

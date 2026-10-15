@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Manual INR records - {{ patient.name }}</h2>
+<p>These record external cash/UPI received by the clinic. The portal does not receive or verify money and does not execute refunds.</p>
+{% for row in rows %}<section><h3>{{ row.charge.category }}: INR {{ row.charge.amount }}</h3><p>External received total: INR {{ row.received }} - {{ row.status }} (manual, not bank-verified)</p>
+{% for receipt in row.charge.receipts.all %}<p>Record #{{ receipt.pk }}: {{ receipt.method }} INR {{ receipt.amount }} - {{ receipt.created_at }}{% if receipt.corrects_id %} (corrects #{{ receipt.corrects_id }}){% endif %}</p>{% endfor %}
+{% for correction in row.charge.corrections.all %}<p>Charge correction: INR {{ correction.previous_amount }} to {{ correction.amount }} - {{ correction.created_at }}</p>{% endfor %}
+</section>{% empty %}<p>No charges recorded.</p>{% endfor %}
+{% for action, form in forms.items %}<section><h3>{{ action|title }}</h3><form method="post">{% csrf_token %}<input type="hidden" name="action" value="{{ action }}">{{ form.as_p }}<button>Record manually</button></form></section>{% endfor %}
+{% endblock %}
